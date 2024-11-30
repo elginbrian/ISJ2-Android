@@ -36,14 +36,17 @@ class FirebaseAuthService {
       final firebaseUser = userCredential.user;
 
       if (firebaseUser != null) {
+        print("Firebase User: ${firebaseUser.uid}, ${firebaseUser.email}");
         return UserModel(id: firebaseUser.uid, email: firebaseUser.email ?? '');
       } else {
         throw Exception('User login failed');
       }
     } catch (e) {
+      print("Login Error: $e");
       throw Exception('Error logging in user: $e');
     }
   }
+
 
   Future<void> signOut() async {
     await _firebaseAuth.signOut();

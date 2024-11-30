@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:isj2_android_flutter/features/presentation/screens/notes_screen.dart';
 import 'package:provider/provider.dart';
 import '../provider/auth_provider.dart';
 import 'register_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -65,8 +67,17 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     try {
-      await Provider.of<AuthProvider>(context, listen: false).login(email, password);
-      Navigator.pop(context);
+      await Provider.of<AuthProvider>(context, listen: false).login(email, password, context);
+
+      final userId = firebase_auth.FirebaseAuth.instance.currentUser!.uid;
+      if (userId != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const NotesScreen()),
+        );
+      } else {
+        throw Exception("User ID not found");
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.toString())));
     } finally {
